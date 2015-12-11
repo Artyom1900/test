@@ -1,0 +1,355 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+
+        <h:form id="form1" style="width: 1250px; margin: auto;"> 
+            <p:panelGrid id="grid1" style="margin: auto;"> 
+                <p:row>           
+                    <p:column rowspan="3" style="vertical-align: top">  
+                        <p:growl id="messages" showDetail="true"/>
+                        <p:scrollPanel mode="native" style="width: 300px; height: 150px">
+                            <p:tree id="tree" value="#{treeEventsView.root}" dynamic="true" var="doc" selectionMode="single" selection="#{treeEventsView.selectedNode}" >
+                                <p:treeNode>
+                                    <h:outputText value="#{doc.name}" />
+                                </p:treeNode>
+                                <p:treeNode type="document" icon="ui-icon-document" >
+                                    <h:outputText value="#{doc.name}"/>
+                                </p:treeNode>
+                                <p:treeNode type="picture" icon="ui-icon-image">
+                                    <h:outputText value="#{doc.name}" />
+                                </p:treeNode>
+                                <p:treeNode type="mp3" icon="ui-icon-video">
+                                    <h:outputText value="#{doc.name}" />
+                                </p:treeNode>
+
+                            </p:tree>
+
+                        </p:scrollPanel>
+                    </p:column>
+
+                    <p:column> 
+                        Валюта:
+                    </p:column>
+                    <p:column> 
+                        <p:selectOneMenu value="#{table.cur}" effect="fold" editable="true" style="width:95px;" id="cur">
+                            <f:selectItems value="#{table.curs}"/>
+                        </p:selectOneMenu>
+                    </p:column>  
+
+                    <p:column colspan="7"> Баланс: 
+                        UAH  <h:outputText id="uah" value="#{table.balansUAH}" style="font-weight:bold"/>  ;
+                        EUR  <h:outputText id="usd" value="#{table.balansEUR}" style="font-weight:bold"/>  ;
+                        USD  <h:outputText id="eur" value="#{table.balansUSD}" style="font-weight:bold"/>  ;
+                    </p:column> 
+                </p:row>
+
+                <p:row>
+                    <p:column colspan="2" >
+                        C : <p:calendar value="#{table.datS}" id="cal1" showButtonPanel="true" pattern="yyyy-MM-dd" required="true" />
+                    </p:column>
+                    <p:column style="width: 100px">
+                        Курс USD:
+                    </p:column>
+
+                    <p:column>
+                        <p:inputText id="cUsd" style="width: 85px;" value="#{pprBean.cursUsd}"/>
+                    </p:column>
+
+                    <p:column colspan="2">
+                        Доход:
+                    </p:column>
+
+                    <p:column style="width: 80px">
+                        <h:outputText id="incyt" value="#{table.numUSD}"/>
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="Показать" id="show" oncomplete="PF('dlg').show()" style="width: 110px" update=":form1:incyt, :form1:exptt, :form1:tab, :form1: cUsd, :form1:cEur, :form1:cal1, :form1:cal2">
+
+                        </p:commandButton>
+                        <p:dialog widgetVar="dlg" modal="true" resizable="false" header="Вывести транзакции на экран " showEffect="fade">
+
+                            <h:outputText id="summ5" value="#{table.exce}" style="color: red"/>
+                            <p:panelGrid id="display" columns="2" columnClasses="label,value" style="margin: auto;">
+
+                                <h:outputText value="Статья: " />
+                                <h:outputText id="summ0" value="#{treeEventsView.selectedNode}"/>
+
+                                <h:outputText value="Валюта: " />
+                                <h:outputText id="summ20" value="#{table.cur}"/>
+
+                                <h:outputText value="С : " />
+                                <h:outputText id="summ2" value="#{table.dateS}"/>
+
+                                <h:outputText value="По : " />
+                                <h:outputText id="summ4" value="#{table.datee}"/>
+
+                                <h:outputText value="Курс EUR: " />
+                                <h:outputText id="summ10" value="#{pprBean.cursUsd}"/>
+
+                                <h:outputText value="Курс USD: " />
+                                <h:outputText id="summ11" value="#{pprBean.cursEur}"/>
+
+                                <p:commandButton value="ДА" id="yes" action="#{table.show()}" disabled="#{table.bat}" style="width: 100px" onclick="PF('dlg').hide();" update=":form1"></p:commandButton>
+                                <p:commandButton value="НЕТ" type="button" styleClass="ui-confirmdialog-no" onclick="PF('dlg').hide();" style="width: 100px"/>
+                            </p:panelGrid>
+                        </p:dialog>
+
+                    </p:column>
+
+                    <p:column>
+
+                        <p:commandButton value="Отчет" oncomplete="PF('dlg1').show()" id="pdf" style="width: 100px;" update=":form1:incyt, :form1:exptt, :form1:tab, :form1: cUsd, :form1:cEur, :form1:cal1, :form1:cal2">
+
+                        </p:commandButton>
+                        <p:dialog widgetVar="dlg1" modal="true" resizable="false" header="Сформировать транзакции в PDF " showEffect="fade">
+
+                            <h:outputText id="summ6" value="#{table.exce}" style="color: red"/>
+                            <p:panelGrid id="display1" columnClasses="label,value" style="margin: auto;">
+
+                                <p:row>
+                                    <p:column>
+                                        <h:outputText value="Статья: " />
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText id="summ7" value="#{treeEventsView.selectedNode}"/>
+                                    </p:column>
+                                </p:row>
+
+                                <p:row>
+                                    <p:column>
+                                        <h:outputText value="Валюта: " />
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText id="summ19" value="#{table.cur}" />
+                                    </p:column>
+                                </p:row>
+
+                                <p:row>
+                                    <p:column>
+                                        <h:outputText value="С : " />
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText id="summ8" value="#{table.dateS}"/>
+                                    </p:column>
+                                </p:row>
+
+                                <p:row>
+                                    <p:column>
+                                        <h:outputText value="По : " />
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText id="summ9" value="#{table.datee}"/>
+                                    </p:column>
+                                </p:row>
+
+                                <p:row>
+                                    <p:column>
+                                        <h:outputText value="Курс EUR: " />
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText id="summ12" value="#{pprBean.cursUsd}"/>
+                                    </p:column>
+                                </p:row>
+
+                                <p:row>
+                                    <p:column>
+                                        <h:outputText value="Курс USD: " />
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText id="summ13" value="#{pprBean.cursEur}"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column>
+                                        <p:commandButton value="ДА" id="yes1" ajax="false" disabled="#{table.bat}" style="width: 100px" onclick="PF('dlg1').hide();" update=":form1:incyt, :form1:exptt, :form1:tab, :form1: cUsd, :form1:cEur, :form1:cal1, :form1:cal2">
+                                            <p:fileDownload value="#{table.file}"></p:fileDownload>
+                                        </p:commandButton>
+
+                                    </p:column>
+                                    <p:column>
+                                        <p:commandButton value="НЕТ" type="button" styleClass="ui-confirmdialog-no" onclick="PF('dlg1').hide();" style="width: 100px"/>
+                                    </p:column>
+                                </p:row>
+                            </p:panelGrid>
+                        </p:dialog>
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column colspan="2">
+                        По: <p:calendar value="#{table.datPo}" id="cal2" showButtonPanel="true" pattern="yyyy-MM-dd" required="true"/>
+                    </p:column>
+                    <p:column>
+                        Курс EUR:
+                    </p:column>
+
+                    <p:column>
+                        <p:inputText id="cEur" style="width: 85px;" value="#{pprBean.cursEur}"/>
+                    </p:column>
+
+                    <p:column colspan="2">
+                        Расход:
+                    </p:column>
+
+                    <p:column>
+                        <h:outputText id="exptt" value="#{table.numUSDex}"/>
+                    </p:column>
+
+                    <p:column colspan="2">
+
+                        <p:commandButton value="Полный отчет" oncomplete="PF('dlg2').show()" 
+                                         id="pdf1fdf" style="width: 240px;" 
+                                         update=":form1:incyt, :form1:exptt, :form1:tab, :form1: cUsd, :form1:cEur, :form1:cal1, :form1:cal2">
+
+                        </p:commandButton>
+                        <p:dialog widgetVar="dlg2" modal="true" resizable="false" header="Сформировать полный отчет в PDF " showEffect="fade">
+                            <h:outputText id="summ21" value="#{table.excePO}" style="color: red"/>
+                            <p:panelGrid id="display2" columnClasses="label,value" style="margin: auto;">
+
+                                <p:row>
+                                    <p:column>
+                                        <h:outputText value="Валюта: " />
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText id="summ18" value="#{table.cur}" />
+                                    </p:column>
+                                </p:row>
+
+                                <p:row>
+                                    <p:column>
+                                        <h:outputText value="С : " />
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText id="summ14" value="#{table.dateS}"/>
+                                    </p:column>
+                                </p:row>
+
+                                <p:row>
+                                    <p:column>
+                                        <h:outputText value="По : " />
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText id="summ15" value="#{table.datee}"/>
+                                    </p:column>
+                                </p:row>
+
+                                <p:row>
+                                    <p:column>
+                                        <h:outputText value="Курс EUR: " />
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText id="summ16" value="#{pprBean.cursUsd}"/>
+                                    </p:column>
+                                </p:row>
+
+                                <p:row>
+                                    <p:column>
+                                        <h:outputText value="Курс USD: " />
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText id="summ17" value="#{pprBean.cursEur}"/>
+                                    </p:column>
+                                </p:row>
+
+                                <p:row>
+                                    <p:column>
+                                        <p:commandButton value="ДА" id="yes2" disabled="#{table.bat}" ajax="false" style="width: 100px" onclick="PF('dlg2').hide();">
+                                            <p:fileDownload value="#{table.file1}"></p:fileDownload>
+                                        </p:commandButton>
+                                        <script type="text/javascript">
+                                            function start() {
+                                                PF('statusDialog').show();
+                                            }
+
+                                            function stop() {
+                                                PF('statusDialog').hide();
+                                            }
+                                        </script>
+                                    </p:column>
+                                    <p:column>
+                                        <p:commandButton value="НЕТ" type="button" styleClass="ui-confirmdialog-no" onclick="PF('dlg2').hide();" style="width: 100px"/>
+                                    </p:column>
+                                </p:row>
+                            </p:panelGrid>
+                        </p:dialog>
+                    </p:column>
+                </p:row>
+
+                <p:row>
+
+                    <p:column  colspan="10" rowspan="8" style="height: 360px"> 
+
+                        <p:dataTable id="tab" var="t" value="#{table.budget}" scrollable="true" scrollHeight="320"> 
+
+                            <p:column headerText="id" style="width: 10px;">  
+                                <h:outputText value="#{t.id}" />  
+                            </p:column>  
+
+                            <p:column headerText="date" style="width: 50px;">  
+                                <h:outputText value="#{t.date}"/>  
+                            </p:column>
+
+                            <p:column headerText="item" style="width: 400px; height: 20px" >  
+
+                                <h:outputText value="#{t.item}"/> 
+
+                            </p:column>  
+
+                            <p:column headerText="sum" style="width: 40px;">  
+                                <h:outputText value="#{t.sum}"/>  
+                            </p:column>  
+
+                            <p:column headerText="cur" style="width: 40px;">  
+                                <h:outputText value="#{t.cur}"/>  
+                            </p:column>
+
+                            <p:column headerText="note" style="width: 150px">  
+                                <h:outputText value="#{t.note}" />  
+                            </p:column> 
+                        </p:dataTable>  
+
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+        </h:form>
+
+        <h:form id="jv">
+            <p:panelGrid id="jgj" style="margin: auto;">
+                <f:facet name="header"> 
+                    <p:row>
+                        <p:column style="width:  676px;">
+
+                        </p:column>
+                        <p:column>
+                            <p:button id="analiz" value="Анализ" outcome="analizS" style="width: 100px" disabled="true"/>
+                        </p:column>
+                        <p:column>
+                            <p:commandButton id="operation" value="Операции" action="#{table.operation()}" style="width: 120px"/>
+                        </p:column>
+                        <p:column>
+                            <p:button id="settings" value="Настройки" outcome="SettingsItem" style="width: 120px"/>
+                        </p:column>
+
+                        <p:column>
+                            <p:commandButton id="logou" value="Logout" action="#{table.logout()}" style="width: 120px"/>
+                        </p:column>
+                    </p:row>
+                </f:facet>
+            </p:panelGrid>
+        </h:form>
+
+        <!--        <h:form id="sad">
+        
+                </h:form>-->
+    </h:body>
+</html>
+
